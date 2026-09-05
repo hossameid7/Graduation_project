@@ -182,34 +182,64 @@ Regression models evaluated on forecasting continuous time-to-failure steps acro
 
 The platform utilizes a decoupled microservices architecture designed for deployment in air-gapped or on-premise industrial network enclaves.
 
-```
-[ SCADA / DGA Telemetry ]
-          |
-          v
-[ Reverse Proxy / Nginx / Vite Frontend ]
-    |                              |
-    | HTTP/REST                    | WebSocket (Real-time telemetry)
-    v                              v
-[ Django 4.2+ REST Core ] <---> [ Django Channels (ASGI/Daphne) ]
-    |              |                       |
-    | ORM          | Celery Task Dispatch  | Redis Channel Layer
-    v              v                       v
-[ SQLite / Postg. ] [ Celery Workers ] <-> [ Redis 7 Broker / Queue ]
-                          |
-                          +--> [ Automated PDF Reports / SMTP Dispatch ]
-                          |
-                          +--> [ Decoupled ML Inference Engine (Flask) ]
-                                    |
-                                    +-- Stacking Classifier (FDD)
-                                    +-- LightGBM Regressor (RUL)
-                                    +-- RobustScaler + Feature Preprocessors
-                                    | Latency: ~120 ms
-                          |
-                          +--> [ On-Premise Diagnostic Copilot ]
-                                    |
-                                    +-- Qwen-2.5-0.5B-Instruct SLM
-                                    +-- ThreadPoolExecutor (Async CPU/CUDA)
-                                    +-- Context-Constrained Diagnostic Prompt
+```mermaid
+flowchart TD
+    subgraph Ingestion ["1. Telemetry Ingestion Layer"]
+        DGA["Online DGA Sensors<br/>(H2, CO, C2H4, C2H2, Temp)"]
+        CSV["Batch SCADA / CSV Ingestion Pipeline"]
+    end
+
+    subgraph Frontend ["2. Client Application (React 18 + Vite)"]
+        UI["Single Page Application (TypeScript)"]
+        Plots["Telemetry Visualizer (Plotly.js + Recharts)"]
+        ChatUI["Diagnostic Copilot Workspace"]
+    end
+
+    subgraph Backend ["3. Application Core (Django 4.2+ REST)"]
+        REST["REST API Controllers & RBAC"]
+        Channels["Django Channels (ASGI / Daphne)"]
+    end
+
+    subgraph AsyncInfra ["4. Asynchronous Processing & Messaging"]
+        Redis["Redis 7 Broker & Channel Layer"]
+        Celery["Celery Task Workers"]
+        Reports["Automated PDF Generation & SMTP Alerts"]
+    end
+
+    subgraph Storage ["5. Persistence Tier"]
+        DB[("Relational Database<br/>(PostgreSQL / SQLite)")]
+    end
+
+    subgraph MLService ["6. ML Inference Microservice (~120 ms)"]
+        FeaturePipe["Feature Engineering Pipeline<br/>(tsfresh, Rolling Stats, IEC Ratios)"]
+        FDD["FDD Two-Level Stacking Classifier<br/>(RF + SVM + XGBoost -> Logistic Reg.)"]
+        RUL["RUL Gradient Booster<br/>(LightGBM + Optuna HPO)"]
+    end
+
+    subgraph CopilotService ["7. On-Premise Diagnostic SLM"]
+        Qwen["Qwen-2.5-0.5B-Instruct SLM<br/>(PyTorch FP16 / ThreadPoolExecutor)"]
+        Rules["IEEE / IEC Standard Knowledge Base"]
+    end
+
+    DGA --> Frontend
+    CSV --> REST
+    Frontend <-->|HTTPS / REST API| REST
+    Frontend <-->|WSS / WebSockets| Channels
+
+    REST <--> DB
+    Channels <--> Redis
+    REST --> Celery
+    Celery <--> Redis
+    Celery --> Reports
+
+    REST -->|Raw Telemetry Window| FeaturePipe
+    FeaturePipe --> FDD
+    FeaturePipe --> RUL
+    FDD -->|Operational State (1-4)| REST
+    RUL -->|Continuous Time-to-Failure| REST
+
+    REST <-->|Diagnostic Context Query| Qwen
+    Rules --> Qwen
 ```
 
 ### Data Flow Execution Lifecycle
