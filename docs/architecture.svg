@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="100%" height="100%" style="background:#0b0f19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+    <linearGradient id="blueAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="purpleAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#7e22ce" />
+    </linearGradient>
+    <linearGradient id="greenAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
+
+    <!-- Markers -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#a855f7" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Header -->
+  <rect x="0" y="0" width="1200" height="70" fill="#0f172a" />
+  <text x="40" y="42" fill="#f8fafc" font-size="20" font-weight="700" letter-spacing="0.5">INDUSTRIAL POWER TRANSFORMER HEALTH MONITORING &amp; PREDICTIVE MAINTENANCE</text>
+  <text x="1000" y="42" fill="#94a3b8" font-size="13" font-weight="500">SYSTEM ARCHITECTURE</text>
+  <line x1="0" y1="70" x2="1200" y2="70" stroke="#1e293b" stroke-width="2" />
+
+  <!-- ==================== COLUMN 1: TELEMETRY & CLIENT (X: 40 - 320) ==================== -->
+  
+  <!-- Group 1: Ingestion Tier -->
+  <rect x="40" y="100" width="280" height="230" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" filter="url(#shadow)" />
+  <rect x="40" y="100" width="280" height="36" rx="8" fill="url(#headerGrad)" />
+  <rect x="40" y="132" width="280" height="4" fill="#f59e0b" />
+  <text x="56" y="124" fill="#f8fafc" font-size="13" font-weight="700">1. TELEMETRY INGESTION</text>
+
+  <!-- Box 1.1: DGA Sensors -->
+  <rect x="56" y="150" width="248" height="74" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="70" y="174" fill="#f8fafc" font-size="13" font-weight="600">Online DGA Sensors</text>
+  <text x="70" y="194" fill="#94a3b8" font-size="11">H2, CO, C2H4, C2H2, Oil Temp</text>
+  <text x="70" y="210" fill="#f59e0b" font-size="10" font-weight="500">Sampling: Every 12 Hours</text>
+
+  <!-- Box 1.2: SCADA/CSV Import -->
+  <rect x="56" y="238" width="248" height="74" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="70" y="262" fill="#f8fafc" font-size="13" font-weight="600">Batch SCADA / CSV Ingest</text>
+  <text x="70" y="282" fill="#94a3b8" font-size="11">Historical Data Pipeline</text>
+  <text x="70" y="298" fill="#38bdf8" font-size="10" font-weight="500">3,000 Records (~1.26M Points)</text>
+
+  <!-- Group 2: Frontend Client -->
+  <rect x="40" y="370" width="280" height="390" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" filter="url(#shadow)" />
+  <rect x="40" y="370" width="280" height="36" rx="8" fill="url(#headerGrad)" />
+  <rect x="40" y="402" width="280" height="4" fill="#38bdf8" />
+  <text x="56" y="394" fill="#f8fafc" font-size="13" font-weight="700">2. PRESENTATION TIER (SPA)</text>
+
+  <!-- Box 2.1: React Core -->
+  <rect x="56" y="420" width="248" height="84" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="70" y="444" fill="#f8fafc" font-size="13" font-weight="600">React 18 + Vite (TypeScript)</text>
+  <text x="70" y="464" fill="#94a3b8" font-size="11">TanStack Query + Zustand Store</text>
+  <text x="70" y="482" fill="#38bdf8" font-size="10" font-weight="500">Tailwind CSS | i18n (EN, RU, AR)</text>
+
+  <!-- Box 2.2: Visualization -->
+  <rect x="56" y="516" width="248" height="74" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="70" y="540" fill="#f8fafc" font-size="13" font-weight="600">Telemetry Visualizer</text>
+  <text x="70" y="560" fill="#94a3b8" font-size="11">Plotly.js + Recharts Dynamic Charts</text>
+  <text x="70" y="576" fill="#10b981" font-size="10" font-weight="500">Real-Time DGA Gas Trends &amp; RUL</text>
+
+  <!-- Box 2.3: Diagnostic Copilot UI -->
+  <rect x="56" y="602" width="248" height="74" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="70" y="626" fill="#f8fafc" font-size="13" font-weight="600">Diagnostic Copilot UI</text>
+  <text x="70" y="646" fill="#94a3b8" font-size="11">Interactive Engineering Chat</text>
+  <text x="70" y="662" fill="#f43f5e" font-size="10" font-weight="500">Telemetry-Grounded Explanations</text>
+
+  <!-- Box 2.4: Report Export -->
+  <rect x="56" y="688" width="248" height="56" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="70" y="712" fill="#f8fafc" font-size="12" font-weight="600">Client PDF Generation</text>
+  <text x="70" y="730" fill="#94a3b8" font-size="10">jsPDF + AutoTable Instant Export</text>
+
+  <!-- ==================== COLUMN 2: APPLICATION & MESSAGING (X: 420 - 740) ==================== -->
+
+  <!-- Group 3: Core Backend -->
+  <rect x="420" y="100" width="320" height="340" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" filter="url(#shadow)" />
+  <rect x="420" y="100" width="320" height="36" rx="8" fill="url(#headerGrad)" />
+  <rect x="420" y="132" width="320" height="4" fill="#10b981" />
+  <text x="436" y="124" fill="#f8fafc" font-size="13" font-weight="700">3. APPLICATION CORE (DJANGO 4.2+)</text>
+
+  <!-- Box 3.1: REST API Gateway -->
+  <rect x="436" y="150" width="288" height="84" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="452" y="174" fill="#f8fafc" font-size="13" font-weight="600">REST API Controllers &amp; RBAC</text>
+  <text x="452" y="194" fill="#94a3b8" font-size="11">SimpleJWT Auth (PBKDF2 SHA-256)</text>
+  <text x="452" y="212" fill="#10b981" font-size="10" font-weight="500">CRUD: Transformers, Telemetry, Users</text>
+
+  <!-- Box 3.2: ASGI / WebSockets -->
+  <rect x="436" y="246" width="288" height="74" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="452" y="270" fill="#f8fafc" font-size="13" font-weight="600">Django Channels (ASGI / Daphne)</text>
+  <text x="452" y="290" fill="#94a3b8" font-size="11">Bidirectional WebSocket Streaming</text>
+  <text x="452" y="306" fill="#38bdf8" font-size="10" font-weight="500">Live Telemetry Push &amp; Admin Chat</text>
+
+  <!-- Box 3.3: Database Layer -->
+  <rect x="436" y="332" width="288" height="92" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="452" y="356" fill="#f8fafc" font-size="13" font-weight="600">Relational Database (Persistence)</text>
+  <text x="452" y="376" fill="#94a3b8" font-size="11">PostgreSQL (Production) / SQLite (Dev)</text>
+  <text x="452" y="394" fill="#06b6d4" font-size="10" font-weight="500">Asset Topology, Time-Series Stores, Audit</text>
+
+  <!-- Group 4: Asynchronous & Event Bus -->
+  <rect x="420" y="480" width="320" height="280" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" filter="url(#shadow)" />
+  <rect x="420" y="480" width="320" height="36" rx="8" fill="url(#headerGrad)" />
+  <rect x="420" y="512" width="320" height="4" fill="#818cf8" />
+  <text x="436" y="504" fill="#f8fafc" font-size="13" font-weight="700">4. ASYNC TASK QUEUE &amp; MESSAGING</text>
+
+  <!-- Box 4.1: Redis Broker -->
+  <rect x="436" y="530" width="288" height="66" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="452" y="552" fill="#f8fafc" font-size="13" font-weight="600">Redis 7 In-Memory Broker</text>
+  <text x="452" y="572" fill="#94a3b8" font-size="11">Channel Layer + Celery Message Transport</text>
+
+  <!-- Box 4.2: Celery Workers -->
+  <rect x="436" y="608" width="288" height="66" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="452" y="630" fill="#f8fafc" font-size="13" font-weight="600">Celery Distributed Workers</text>
+  <text x="452" y="650" fill="#94a3b8" font-size="11">Background Tasks &amp; Scheduled Health Audits</text>
+
+  <!-- Box 4.3: SMTP & Alerts -->
+  <rect x="436" y="686" width="288" height="60" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="452" y="708" fill="#f8fafc" font-size="12" font-weight="600">Automated PDF Reports &amp; SMTP Alerts</text>
+  <text x="452" y="726" fill="#94a3b8" font-size="10">Incidence Escalation &amp; Dispatch</text>
+
+  <!-- ==================== COLUMN 3: ML INFERENCE & SLM COPILOT (X: 840 - 1160) ==================== -->
+
+  <!-- Group 5: ML Inference Microservice -->
+  <rect x="840" y="100" width="320" height="390" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" filter="url(#shadow)" />
+  <rect x="840" y="100" width="320" height="36" rx="8" fill="url(#headerGrad)" />
+  <rect x="840" y="132" width="320" height="4" fill="#a855f7" />
+  <text x="856" y="124" fill="#f8fafc" font-size="13" font-weight="700">5. DEDICATED ML INFERENCE ENGINE</text>
+
+  <!-- Box 5.1: Feature Pipeline -->
+  <rect x="856" y="150" width="288" height="84" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="872" y="174" fill="#f8fafc" font-size="13" font-weight="600">Feature Engineering Pipeline</text>
+  <text x="872" y="194" fill="#94a3b8" font-size="11">Derivatives, 3-Step Windows, Lags, FFT</text>
+  <text x="872" y="212" fill="#f59e0b" font-size="10" font-weight="500">tsfresh + RobustScaler Outlier Mitigation</text>
+
+  <!-- Box 5.2: FDD Classifier -->
+  <rect x="856" y="246" width="288" height="92" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="872" y="270" fill="#f8fafc" font-size="13" font-weight="600">FDD Two-Level Stacking Classifier</text>
+  <text x="872" y="290" fill="#94a3b8" font-size="11">L0: RF + SVM + XGBoost | L1: Logistic Reg.</text>
+  <text x="872" y="308" fill="#10b981" font-size="10" font-weight="600">Champion: Acc 0.97 | Macro F1 0.92</text>
+  <text x="872" y="324" fill="#94a3b8" font-size="9">Class Imbalance Handled: 19:1 (SMOTE)</text>
+
+  <!-- Box 5.3: RUL Regressor -->
+  <rect x="856" y="350" width="288" height="92" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="872" y="374" fill="#f8fafc" font-size="13" font-weight="600">RUL LightGBM Regressor</text>
+  <text x="872" y="394" fill="#94a3b8" font-size="11">Leaf-Wise Tree Growth + Optuna HPO</text>
+  <text x="872" y="412" fill="#10b981" font-size="10" font-weight="600">Champion: MAE 66.30 | R^2 0.86</text>
+  <text x="872" y="428" fill="#a855f7" font-size="9" font-weight="500">-56.4% MAE Reduction vs Baseline</text>
+
+  <!-- Box 5.4: Latency KPI -->
+  <rect x="856" y="452" width="288" height="26" rx="4" fill="#1e293b" stroke="#7e22ce" stroke-width="1" />
+  <text x="914" y="469" fill="#a855f7" font-size="11" font-weight="600">Flask Service Latency: ~120 ms</text>
+
+  <!-- Group 6: Diagnostic Copilot -->
+  <rect x="840" y="530" width="320" height="230" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" filter="url(#shadow)" />
+  <rect x="840" y="530" width="320" height="36" rx="8" fill="url(#headerGrad)" />
+  <rect x="840" y="562" width="320" height="4" fill="#f43f5e" />
+  <text x="856" y="554" fill="#f8fafc" font-size="13" font-weight="700">6. ON-PREMISE DIAGNOSTIC COPILOT</text>
+
+  <!-- Box 6.1: SLM -->
+  <rect x="856" y="580" width="288" height="84" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="872" y="604" fill="#f8fafc" font-size="13" font-weight="600">Qwen-2.5-0.5B-Instruct SLM</text>
+  <text x="872" y="624" fill="#94a3b8" font-size="11">Hugging Face Transformers + PyTorch</text>
+  <text x="872" y="642" fill="#f43f5e" font-size="10" font-weight="500">FP16 CUDA Acceleration / CPU Fallback</text>
+
+  <!-- Box 6.2: Prompt & Rules -->
+  <rect x="856" y="676" width="288" height="70" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1" />
+  <text x="872" y="700" fill="#f8fafc" font-size="12" font-weight="600">Domain-Locked Diagnostic Prompt</text>
+  <text x="872" y="720" fill="#94a3b8" font-size="10">IEEE C57.104 &amp; IEC 60599 Standards</text>
+  <text x="872" y="734" fill="#38bdf8" font-size="10">Strict Power Engineering Context Window</text>
+
+  <!-- ==================== CONNECTIONS / FLOW ARROWS ==================== -->
+  
+  <!-- Ingestion to Client -->
+  <path d="M 180 330 L 180 370" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="188" y="355" fill="#f59e0b" font-size="10" font-weight="600">Telemetry Stream</text>
+
+  <!-- Ingestion to Core Backend -->
+  <path d="M 304 275 L 436 190" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)" />
+
+  <!-- Frontend to Core Backend (HTTP) -->
+  <path d="M 320 450 L 436 180" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-blue)" />
+  <text x="330" y="320" fill="#38bdf8" font-size="11" font-weight="600">HTTPS / REST API</text>
+
+  <!-- Frontend to Channels (WebSocket) -->
+  <path d="M 320 540 L 436 280" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)" />
+  <text x="325" y="410" fill="#10b981" font-size="11" font-weight="600">WSS / WebSocket</text>
+
+  <!-- Backend to Redis & Celery -->
+  <path d="M 580 440 L 580 480" stroke="#818cf8" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- Backend to ML Service -->
+  <path d="M 740 190 L 856 190" stroke="#a855f7" stroke-width="2" marker-end="url(#arrow-purple)" />
+  <text x="750" y="180" fill="#a855f7" font-size="11" font-weight="600">Feature Matrix</text>
+
+  <!-- ML Service back to Backend -->
+  <path d="M 856 310 L 740 310" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)" />
+  <text x="748" y="330" fill="#10b981" font-size="11" font-weight="600">Predictions (FDD, RUL)</text>
+
+  <!-- Backend to Diagnostic Copilot -->
+  <path d="M 740 380 L 800 380 L 800 630 L 856 630" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)" />
+  <text x="750" y="580" fill="#f43f5e" font-size="10" font-weight="600">Natural Lang Query</text>
+
+</svg>

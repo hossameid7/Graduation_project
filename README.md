@@ -182,6 +182,11 @@ Regression models evaluated on forecasting continuous time-to-failure steps acro
 
 The platform utilizes a decoupled microservices architecture designed for deployment in air-gapped or on-premise industrial network enclaves.
 
+![Industrial Power Transformer Monitoring System Architecture](docs/architecture.svg)
+
+<details>
+<summary>Click to view interactive Mermaid flowchart specification</summary>
+
 ```mermaid
 flowchart TD
     subgraph Ingestion ["1. Telemetry Ingestion Layer"]
@@ -241,6 +246,8 @@ flowchart TD
     REST <-->|Diagnostic Context Query| Qwen
     Rules --> Qwen
 ```
+
+</details>
 
 ### Data Flow Execution Lifecycle
 
