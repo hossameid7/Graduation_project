@@ -182,133 +182,41 @@ Regression models evaluated on forecasting continuous time-to-failure steps acro
 
 The platform utilizes a decoupled microservices architecture designed for deployment in air-gapped or on-premise industrial network enclaves.
 
-```mermaid
-flowchart LR
-    Telemetry(["Telemetry Stream\n(H2, CO, C2H4, C2H2, Temp)"]) --> Step1["1. Feature Pipeline\n(Derivatives & IEC Ratios)"]
-    Step1 --> Step2["2. RobustScaler\n(Outlier Normalization)"]
-    Step2 --> Step3{"3. Inference Engine"}
-    Step3 -->|"Classification"| Step4a["FDD Stacking Model\n(Operational State 1-4)"]
-    Step3 -->|"Regression"| Step4b["LightGBM Regressor\n(RUL Step Forecast)"]
-    Step4a & Step4b --> Step5[("4. ORM Persistence\n(PostgreSQL / SQLite)")]
-    Step5 --> Step6["5. Real-Time Broadcast\n(ASGI / WebSockets)"]
-    Step6 --> Outbound(["Client Operations Dashboard"])
-```
-
-![Industrial Power Transformer Monitoring System Architecture](docs/architecture.svg)
-
-```mermaid
-flowchart TD
-    subgraph ClientLayer ["Client Presentation Tier (React 18 + Vite)"]
-        ClientUI["Operator Web Dashboard<br/>(TypeScript / Tailwind CSS / i18n)"]
-        LivePlot["Telemetry Visualizer<br/>(Plotly.js & Recharts Streaming)"]
-        CopilotChat["Diagnostic Copilot Workspace<br/>(Natural Language Interface)"]
-    end
-
-    subgraph IngestionTier ["Telemetry Ingestion & Sensors"]
-        Sensors["Online DGA Telemetry<br/>(H2, CO, C2H4, C2H2, Top-Oil Temp)"]
-        BatchIngest["SCADA Batch CSV Pipeline<br/>(3,000 Assets / 1.26M Points)"]
-    end
-
-    subgraph CoreBackend ["Application Core Gateway (Django 4.2+ REST)"]
-        direction TB
-
-        subgraph SecurityAuth ["Authentication & Authorization"]
-            AuthRouter["Auth & Access Control<br/>(JWT PBKDF2 SHA-256 & RBAC)"]
-            RateLimiter["Rate Limiting & Throttles<br/>(Anon: 10/min, User: 60/min)"]
-        end
-
-        subgraph BusinessLogic ["Domain & Telemetry Controllers"]
-            AssetService["Transformer Asset Manager<br/>(Fleet Topology & Health Records)"]
-            MeasureService["Measurement Ingestion Controller<br/>(Synchronous Inference Dispatch)"]
-        end
-
-        subgraph StorageLayer ["Transactional Persistence Tier"]
-            Database[("Relational Database Store<br/>PostgreSQL (Prod) / SQLite (Dev)")]
-        end
-    end
-
-    subgraph RealTimeAsync ["Real-Time & Asynchronous Task Fabric"]
-        direction TB
-
-        subgraph WebSocketFabric ["Real-Time Streaming Layer"]
-            Channels["Django Channels (ASGI / Daphne)<br/>(Channel Layer Protocol)"]
-        end
-
-        subgraph TaskQueue ["Asynchronous Processing Subsystem"]
-            RedisBroker[("Redis 7 In-Memory Broker<br/>(Task Queue & Pub/Sub)")]
-            CeleryWorkers["Celery Distributed Workers<br/>(Automated Health Audits)"]
-            EmailReporter["PDF Report Engine & SMTP<br/>(Incident Dispatch & Escalation)"]
-        end
-    end
-
-    subgraph MLSubsystem ["ML Inference Microservice (~120ms Latency)"]
-        direction TB
-
-        subgraph FeatureEngine ["Feature Engineering & Preprocessing"]
-            SlidingWindow["Rolling Window Extractor<br/>(tsfresh MinimalFC + IEC Ratios)"]
-            Scaler["RobustScaler Transformer<br/>(IQR Median Normalization)"]
-        end
-
-        subgraph ModelInference ["Predictive Modeling Runtime"]
-            FDDModel{"FDD Stacking Classifier<br/>RF + SVM + XGBoost -> Logistic Reg.<br/>(Acc: 0.97, Macro F1: 0.92)"}
-            RULModel{"LightGBM Continuous Regressor<br/>Leaf-Wise Growth + Optuna HPO<br/>(MAE: 66.30, R^2: 0.86)"}
-        end
-    end
-
-    subgraph DiagnosticCopilot ["On-Premise Diagnostic SLM Subsystem"]
-        QwenSLM["Qwen-2.5-0.5B-Instruct SLM<br/>(PyTorch FP16 / ThreadPoolExecutor)"]
-        StandardsPrompt["Domain-Locked Safety Prompt<br/>(IEEE C57.104 & IEC 60599 Rules)"]
-    end
-
-    %% Ingestion Flow
-    Sensors -->|"12-Hour Sample Vector"| MeasureService
-    BatchIngest -->|"Bulk Telemetry Import"| MeasureService
-
-    %% Client Interactions
-    ClientUI -->|"HTTPS POST /api/measurements/"| AuthRouter
-    AuthRouter --> RateLimiter
-    RateLimiter --> MeasureService
-
-    %% Persistence
-    MeasureService -->|"Commit Telemetry"| Database
-    AssetService <-->|"Query Fleet State"| Database
-
-    %% ML Execution Flow
-    MeasureService -->|"Raw Sequence Window (T=420)"| SlidingWindow
-    SlidingWindow -->|"Extracted Domain Features"| Scaler
-    Scaler -->|"Normalized Vector"| FDDModel
-    Scaler -->|"Normalized Vector"| RULModel
-
-    %% Model Return Flow
-    FDDModel -->|"FDD Fault State (1-4)"| MeasureService
-    RULModel -->|"RUL Step Forecast (Hours = Steps * 12)"| MeasureService
-
-    %% Real-Time Broadcast
-    MeasureService -.->|"Broadcast State Update"| Channels
-    Channels <-->|"Pub/Sub Channel Layer"| RedisBroker
-    Channels -->|"WebSocket Push (WSS)"| LivePlot
-
-    %% Asynchronous Processing
-    AssetService -->|"Trigger Scheduled Audit"| RedisBroker
-    RedisBroker -->|"Pop Task"| CeleryWorkers
-    CeleryWorkers -->|"Generate PDF & Dispatch"| EmailReporter
-    EmailReporter -.->|"SMTP Alert Notification"| ClientUI
-
-    %% Diagnostic Copilot Inquiry
-    CopilotChat -->|"POST /api/chat/chat/"| AuthRouter
-    RateLimiter -->|"Chat Query + Transformer State"| QwenSLM
-    StandardsPrompt -.->|"Domain Constraints"| QwenSLM
-    QwenSLM -->|"Diagnostic Technical Explanation"| CopilotChat
-```
+![System Architecture](docs/system_architecture.svg)
 
 ### Data Flow Execution Lifecycle
 
 1. Ingestion: Telemetry inputs (H2, CO, C2H4, C2H2, Temp) arrive via REST payload or automated CSV batch ingestion.
-2. Feature Transformation: Raw telemetry is processed through historical sliding windows to construct derivatives, ratios, and lag features.
-3. Inference Execution: Django REST routes feature matrices to the ML runtime service. The Stacking Classifier outputs the FDD fault state, while LightGBM computes the RUL prediction within ~120 ms.
-4. Database Persistence: Predictions, input values, and timestamps are persisted to the transactional database (PostgreSQL / SQLite).
-5. Live Broadcast: Django Channels dispatches serialized telemetry updates across active WebSocket client sessions.
-6. Diagnostic Querying: When operators request technical explanations, the integrated Qwen-2.5-0.5B SLM contextualizes the telemetry against standard IEEE/IEC transformer operational thresholds.
+2. Authentication & Validation: The Django REST Framework core validates user session tokens (JWT) and checks asset access privileges.
+3. Inference Execution: Backend API routes feature matrices to the dedicated ML Models runtime. The Two-Level Stacking Classifier outputs the multi-class FDD fault diagnosis, while the LightGBM Regressor computes the remaining useful life (RUL) step prediction within ~120 ms.
+4. Database Persistence: Telemetry inputs, timestamps, and model predictions are persisted to the transactional database (PostgreSQL / SQLite).
+5. Diagnostic Querying: When operators request technical explanations, the integrated Qwen-2.5-0.5B-Instruct SLM contextualizes the telemetry against standard IEEE/IEC transformer operational thresholds asynchronously.
+6. Error Handling: Built-in exception handling intercepts and logs failure states without interrupting active monitoring pipelines.
+
+---
+
+## Application Workflow & User Journey
+
+The operational user journey illustrates the complete navigational lifecycle from initial access through automated predictive analysis to historical asset management.
+
+![Application Workflow and User Journey](docs/user_workflow.svg)
+
+### Navigational Phases
+
+1. Authentication & Access Gate:
+   * Users land on the Home / Welcome page with multilingual localization (English, Russian, Arabic).
+   * New users complete registration; existing users log in via secure token-based authentication.
+2. Operational Dashboard & Telemetry Ingestion:
+   * Authenticated operators access the central Dashboard displaying real-time fleet statuses and recent alerts.
+   * Operators navigate to the Prediction Page to input live Dissolved Gas Analysis (DGA) readings and operating temperature.
+3. Fault Diagnosis & Prognostics Output:
+   * Initiating prediction triggers automated validation: valid inputs proceed to the Results Page showing FDD classification and RUL time-to-failure; invalid inputs trigger explicit error feedback.
+   * Confirmed results are automatically committed to historical storage.
+4. Historical Analysis & Fleet Management:
+   * The History Page enables multi-parameter filtering, interactive Plotly.js trend examination, and PDF compliance report export.
+   * Operators can manage user profiles, update credentials, or initiate account termination workflows.
+5. Support & Knowledge Copilot:
+   * Direct access to the Qwen-2.5-0.5B diagnostic assistant for technical IEEE/IEC guidelines and administrator messaging.
 
 ---
 

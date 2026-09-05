@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 520" width="100%" height="100%" style="background:#ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.08" />
+    </filter>
+    <marker id="arrowSolid" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b" />
+    </marker>
+    <marker id="arrowDashed" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569" />
+    </marker>
+  </defs>
+
+  <!-- Title & Frame -->
+  <rect x="15" y="15" width="1030" height="490" rx="12" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5" />
+  <text x="40" y="46" fill="#0f172a" font-size="16" font-weight="700" letter-spacing="0.3">SYSTEM ARCHITECTURE</text>
+  <text x="40" y="66" fill="#64748b" font-size="12">High-level interaction lifecycle between client, backend controllers, predictive ML runtime, and storage</text>
+
+  <!-- ================= NODES ================= -->
+
+  <!-- User Oval -->
+  <ellipse cx="80" cy="270" rx="45" ry="24" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5" filter="url(#cardShadow)" />
+  <text x="80" y="275" fill="#0369a1" font-size="14" font-weight="600" text-anchor="middle">User</text>
+
+  <!-- Frontend Box -->
+  <rect x="180" y="242" width="145" height="56" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5" filter="url(#cardShadow)" />
+  <text x="252" y="266" fill="#0c4a6e" font-size="13" font-weight="700" text-anchor="middle">Frontend</text>
+  <text x="252" y="284" fill="#0369a1" font-size="11" text-anchor="middle">(React + TypeScript)</text>
+
+  <!-- Backend API Box -->
+  <rect x="420" y="242" width="165" height="56" rx="10" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" filter="url(#cardShadow)" />
+  <text x="502" y="266" fill="#713f12" font-size="13" font-weight="700" text-anchor="middle">Backend API</text>
+  <text x="502" y="284" fill="#854d0e" font-size="11" text-anchor="middle">(Django REST Framework)</text>
+
+  <!-- Authentication Service -->
+  <rect x="710" y="70" width="200" height="52" rx="10" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" filter="url(#cardShadow)" />
+  <text x="810" y="94" fill="#713f12" font-size="12" font-weight="700" text-anchor="middle">Authentication Service</text>
+  <text x="810" y="110" fill="#854d0e" font-size="11" text-anchor="middle">(JSON Web Token)</text>
+
+  <!-- Error Handler -->
+  <rect x="730" y="152" width="160" height="52" rx="10" fill="#fecaca" stroke="#dc2626" stroke-width="1.5" filter="url(#cardShadow)" />
+  <text x="810" y="176" fill="#7f1d1d" font-size="13" font-weight="700" text-anchor="middle">Error Handler</text>
+  <text x="810" y="193" fill="#991b1b" font-size="11" text-anchor="middle">(Exception Logging)</text>
+
+  <!-- ML Models API -->
+  <rect x="730" y="244" width="160" height="52" rx="10" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5" filter="url(#cardShadow)" />
+  <text x="810" y="268" fill="#581c87" font-size="13" font-weight="700" text-anchor="middle">ML Models API</text>
+  <text x="810" y="285" fill="#7e22ce" font-size="11" font-weight="600" text-anchor="middle">(FDD, RUL)</text>
+
+  <!-- AI Assistant -->
+  <rect x="730" y="336" width="160" height="52" rx="10" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5" filter="url(#cardShadow)" />
+  <text x="810" y="360" fill="#0c4a6e" font-size="13" font-weight="700" text-anchor="middle">AI Assistant</text>
+  <text x="810" y="377" fill="#0369a1" font-size="11" font-weight="600" text-anchor="middle">(Qwen 2.5)</text>
+
+  <!-- Database Cylinder -->
+  <g transform="translate(930, 400)">
+    <path d="M 0 15 A 50 12 0 0 0 100 15 L 100 50 A 50 12 0 0 1 0 50 Z" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5" />
+    <ellipse cx="50" cy="15" rx="50" ry="12" fill="#86efac" stroke="#16a34a" stroke-width="1.5" />
+    <text x="50" y="38" fill="#14532d" font-size="12" font-weight="700" text-anchor="middle">Database</text>
+    <text x="50" y="52" fill="#166534" font-size="11" text-anchor="middle">(SQLite)</text>
+  </g>
+
+  <!-- ================= ARROWS & LABELS ================= -->
+
+  <!-- User -> Frontend -->
+  <line x1="125" y1="270" x2="174" y2="270" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrowSolid)" />
+  <text x="150" y="260" fill="#334155" font-size="10" font-weight="600" text-anchor="middle">Uses UI</text>
+
+  <!-- Frontend -> Backend API (Top solid) -->
+  <line x1="325" y1="258" x2="414" y2="258" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrowSolid)" />
+  <text x="370" y="250" fill="#334155" font-size="10" font-weight="600" text-anchor="middle">HTTP POST/GET</text>
+
+  <!-- Backend API -> Frontend (Bottom dashed) -->
+  <line x1="420" y1="282" x2="331" y2="282" stroke="#475569" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrowDashed)" />
+  <text x="370" y="297" fill="#475569" font-size="10" font-weight="600" text-anchor="middle">HTTP Response</text>
+
+  <!-- Backend API -> Authentication Service (Up then Right) -->
+  <path d="M 502 242 L 502 96 L 704 96" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrowSolid)" />
+  <text x="590" y="88" fill="#334155" font-size="11" font-weight="600">Session Validation</text>
+
+  <!-- Backend API -> Error Handler (Up then Right, dashed) -->
+  <path d="M 540 242 L 540 178 L 724 178" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrowDashed)" />
+  <text x="610" y="170" fill="#dc2626" font-size="11" font-weight="600">Handles Failure</text>
+
+  <!-- Backend API -> ML Models API (Straight Right) -->
+  <line x1="585" y1="270" x2="724" y2="270" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrowSolid)" />
+  <text x="655" y="262" fill="#334155" font-size="11" font-weight="600" text-anchor="middle">Analyze Request</text>
+
+  <!-- Backend API -> AI Assistant (Down then Right, dashed) -->
+  <path d="M 540 298 L 540 362 L 724 362" fill="none" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrowDashed)" />
+  <text x="610" y="354" fill="#0284c7" font-size="11" font-weight="600">Async Call</text>
+
+  <!-- Backend API -> Database (Down then Right) -->
+  <path d="M 502 298 L 502 445 L 924 445" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrowSolid)" />
+  <text x="700" y="465" fill="#334155" font-size="11" font-weight="600">SQL Read/Write</text>
+
+  <!-- ML Models API -> Database (Right then Down, dashed) -->
+  <path d="M 890 270 L 980 270 L 980 394" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrowDashed)" />
+  <text x="940" y="262" fill="#16a34a" font-size="10" font-weight="600">Store Prediction Results</text>
+
+</svg>
