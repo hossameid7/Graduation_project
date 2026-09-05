@@ -178,76 +178,128 @@ Regression models evaluated on forecasting continuous time-to-failure steps acro
 
 ---
 
-## Architecture and Data Flow
+## Architecture & Request Lifecycle
 
 The platform utilizes a decoupled microservices architecture designed for deployment in air-gapped or on-premise industrial network enclaves.
 
-![Industrial Power Transformer Monitoring System Architecture](docs/architecture.svg)
+```mermaid
+flowchart LR
+    Telemetry(["Telemetry Stream\n(H2, CO, C2H4, C2H2, Temp)"]) --> Step1["1. Feature Pipeline\n(Derivatives & IEC Ratios)"]
+    Step1 --> Step2["2. RobustScaler\n(Outlier Normalization)"]
+    Step2 --> Step3{"3. Inference Engine"}
+    Step3 -->|"Classification"| Step4a["FDD Stacking Model\n(Operational State 1-4)"]
+    Step3 -->|"Regression"| Step4b["LightGBM Regressor\n(RUL Step Forecast)"]
+    Step4a & Step4b --> Step5[("4. ORM Persistence\n(PostgreSQL / SQLite)")]
+    Step5 --> Step6["5. Real-Time Broadcast\n(ASGI / WebSockets)"]
+    Step6 --> Outbound(["Client Operations Dashboard"])
+```
 
-<details>
-<summary>Click to view interactive Mermaid flowchart specification</summary>
+![Industrial Power Transformer Monitoring System Architecture](docs/architecture.svg)
 
 ```mermaid
 flowchart TD
-    subgraph Ingestion ["1. Telemetry Ingestion Layer"]
-        DGA["Online DGA Sensors<br/>(H2, CO, C2H4, C2H2, Temp)"]
-        CSV["Batch SCADA / CSV Ingestion Pipeline"]
+    subgraph ClientLayer ["Client Presentation Tier (React 18 + Vite)"]
+        ClientUI["Operator Web Dashboard<br/>(TypeScript / Tailwind CSS / i18n)"]
+        LivePlot["Telemetry Visualizer<br/>(Plotly.js & Recharts Streaming)"]
+        CopilotChat["Diagnostic Copilot Workspace<br/>(Natural Language Interface)"]
     end
 
-    subgraph Frontend ["2. Client Application (React 18 + Vite)"]
-        UI["Single Page Application (TypeScript)"]
-        Plots["Telemetry Visualizer (Plotly.js + Recharts)"]
-        ChatUI["Diagnostic Copilot Workspace"]
+    subgraph IngestionTier ["Telemetry Ingestion & Sensors"]
+        Sensors["Online DGA Telemetry<br/>(H2, CO, C2H4, C2H2, Top-Oil Temp)"]
+        BatchIngest["SCADA Batch CSV Pipeline<br/>(3,000 Assets / 1.26M Points)"]
     end
 
-    subgraph Backend ["3. Application Core (Django 4.2+ REST)"]
-        REST["REST API Controllers & RBAC"]
-        Channels["Django Channels (ASGI / Daphne)"]
+    subgraph CoreBackend ["Application Core Gateway (Django 4.2+ REST)"]
+        direction TB
+
+        subgraph SecurityAuth ["Authentication & Authorization"]
+            AuthRouter["Auth & Access Control<br/>(JWT PBKDF2 SHA-256 & RBAC)"]
+            RateLimiter["Rate Limiting & Throttles<br/>(Anon: 10/min, User: 60/min)"]
+        end
+
+        subgraph BusinessLogic ["Domain & Telemetry Controllers"]
+            AssetService["Transformer Asset Manager<br/>(Fleet Topology & Health Records)"]
+            MeasureService["Measurement Ingestion Controller<br/>(Synchronous Inference Dispatch)"]
+        end
+
+        subgraph StorageLayer ["Transactional Persistence Tier"]
+            Database[("Relational Database Store<br/>PostgreSQL (Prod) / SQLite (Dev)")]
+        end
     end
 
-    subgraph AsyncInfra ["4. Asynchronous Processing & Messaging"]
-        Redis["Redis 7 Broker & Channel Layer"]
-        Celery["Celery Task Workers"]
-        Reports["Automated PDF Generation & SMTP Alerts"]
+    subgraph RealTimeAsync ["Real-Time & Asynchronous Task Fabric"]
+        direction TB
+
+        subgraph WebSocketFabric ["Real-Time Streaming Layer"]
+            Channels["Django Channels (ASGI / Daphne)<br/>(Channel Layer Protocol)"]
+        end
+
+        subgraph TaskQueue ["Asynchronous Processing Subsystem"]
+            RedisBroker[("Redis 7 In-Memory Broker<br/>(Task Queue & Pub/Sub)")]
+            CeleryWorkers["Celery Distributed Workers<br/>(Automated Health Audits)"]
+            EmailReporter["PDF Report Engine & SMTP<br/>(Incident Dispatch & Escalation)"]
+        end
     end
 
-    subgraph Storage ["5. Persistence Tier"]
-        DB[("Relational Database<br/>(PostgreSQL / SQLite)")]
+    subgraph MLSubsystem ["ML Inference Microservice (~120ms Latency)"]
+        direction TB
+
+        subgraph FeatureEngine ["Feature Engineering & Preprocessing"]
+            SlidingWindow["Rolling Window Extractor<br/>(tsfresh MinimalFC + IEC Ratios)"]
+            Scaler["RobustScaler Transformer<br/>(IQR Median Normalization)"]
+        end
+
+        subgraph ModelInference ["Predictive Modeling Runtime"]
+            FDDModel{"FDD Stacking Classifier<br/>RF + SVM + XGBoost -> Logistic Reg.<br/>(Acc: 0.97, Macro F1: 0.92)"}
+            RULModel{"LightGBM Continuous Regressor<br/>Leaf-Wise Growth + Optuna HPO<br/>(MAE: 66.30, R^2: 0.86)"}
+        end
     end
 
-    subgraph MLService ["6. ML Inference Microservice (~120 ms)"]
-        FeaturePipe["Feature Engineering Pipeline<br/>(tsfresh, Rolling Stats, IEC Ratios)"]
-        FDD["FDD Two-Level Stacking Classifier<br/>(RF + SVM + XGBoost -> Logistic Reg.)"]
-        RUL["RUL Gradient Booster<br/>(LightGBM + Optuna HPO)"]
+    subgraph DiagnosticCopilot ["On-Premise Diagnostic SLM Subsystem"]
+        QwenSLM["Qwen-2.5-0.5B-Instruct SLM<br/>(PyTorch FP16 / ThreadPoolExecutor)"]
+        StandardsPrompt["Domain-Locked Safety Prompt<br/>(IEEE C57.104 & IEC 60599 Rules)"]
     end
 
-    subgraph CopilotService ["7. On-Premise Diagnostic SLM"]
-        Qwen["Qwen-2.5-0.5B-Instruct SLM<br/>(PyTorch FP16 / ThreadPoolExecutor)"]
-        Rules["IEEE / IEC Standard Knowledge Base"]
-    end
+    %% Ingestion Flow
+    Sensors -->|"12-Hour Sample Vector"| MeasureService
+    BatchIngest -->|"Bulk Telemetry Import"| MeasureService
 
-    DGA --> Frontend
-    CSV --> REST
-    Frontend <-->|HTTPS / REST API| REST
-    Frontend <-->|WSS / WebSockets| Channels
+    %% Client Interactions
+    ClientUI -->|"HTTPS POST /api/measurements/"| AuthRouter
+    AuthRouter --> RateLimiter
+    RateLimiter --> MeasureService
 
-    REST <--> DB
-    Channels <--> Redis
-    REST --> Celery
-    Celery <--> Redis
-    Celery --> Reports
+    %% Persistence
+    MeasureService -->|"Commit Telemetry"| Database
+    AssetService <-->|"Query Fleet State"| Database
 
-    REST -->|Raw Telemetry Window| FeaturePipe
-    FeaturePipe --> FDD
-    FeaturePipe --> RUL
-    FDD -->|Operational State (1-4)| REST
-    RUL -->|Continuous Time-to-Failure| REST
+    %% ML Execution Flow
+    MeasureService -->|"Raw Sequence Window (T=420)"| SlidingWindow
+    SlidingWindow -->|"Extracted Domain Features"| Scaler
+    Scaler -->|"Normalized Vector"| FDDModel
+    Scaler -->|"Normalized Vector"| RULModel
 
-    REST <-->|Diagnostic Context Query| Qwen
-    Rules --> Qwen
+    %% Model Return Flow
+    FDDModel -->|"FDD Fault State (1-4)"| MeasureService
+    RULModel -->|"RUL Step Forecast (Hours = Steps * 12)"| MeasureService
+
+    %% Real-Time Broadcast
+    MeasureService -.->|"Broadcast State Update"| Channels
+    Channels <-->|"Pub/Sub Channel Layer"| RedisBroker
+    Channels -->|"WebSocket Push (WSS)"| LivePlot
+
+    %% Asynchronous Processing
+    AssetService -->|"Trigger Scheduled Audit"| RedisBroker
+    RedisBroker -->|"Pop Task"| CeleryWorkers
+    CeleryWorkers -->|"Generate PDF & Dispatch"| EmailReporter
+    EmailReporter -.->|"SMTP Alert Notification"| ClientUI
+
+    %% Diagnostic Copilot Inquiry
+    CopilotChat -->|"POST /api/chat/chat/"| AuthRouter
+    RateLimiter -->|"Chat Query + Transformer State"| QwenSLM
+    StandardsPrompt -.->|"Domain Constraints"| QwenSLM
+    QwenSLM -->|"Diagnostic Technical Explanation"| CopilotChat
 ```
-
-</details>
 
 ### Data Flow Execution Lifecycle
 
