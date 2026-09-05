@@ -48,41 +48,47 @@ The empirical foundation comprises 3,000 independent operational time-series rec
 
 ### Mathematical Formulation
 
-Given an input multivariate sequence for asset i:
+Given an input multivariate sequence for asset $i$:
 
-```
-X_i = [x_1, x_2, ..., x_T]^T in R^{T x D}
-```
+$$
+\mathbf{X}_i = [\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_T]^T \in \mathbb{R}^{T \times D}
+$$
 
-where T = 420 time steps and D = 5 physical parameters.
+where $T = 420$ time steps and $D = 5$ physical telemetry features.
 
-For the multi-class FDD task, the model estimates the class probability distribution:
+For the multi-class Fault Detection and Diagnosis (FDD) task, the model estimates the posterior class probability distribution:
 
-```
-P(y_FDD = k | X_i), k in {1, 2, 3, 4}
-```
+$$
+P(y_{\text{FDD}} = k \mid \mathbf{X}_i), \quad k \in \{1, 2, 3, 4\}
+$$
 
-optimizing penalized cross-entropy to handle class imbalance:
+optimizing class-weighted cross-entropy loss to mitigate the 19:1 class imbalance:
 
-```
-L_FDD = - sum_{k=1}^K w_k * y_{i,k} * log(p_{i,k})
-```
+$$
+\mathcal{L}_{\text{FDD}} = -\sum_{k=1}^K w_k \cdot y_{i,k} \cdot \log(p_{i,k})
+$$
 
-where w_k denotes the inverse class frequency weighting factor.
+where $w_k$ denotes the inverse class frequency weighting penalty.
 
-For the continuous RUL regression task, the objective maps the input representation to a continuous scalar:
+For the continuous Remaining Useful Life (RUL) regression task, the mapping estimates time-to-failure over the operational domain:
 
-```
-y_hat_RUL = f(X_i) in [362, 1093]
-```
+$$
+\hat{y}_{\text{RUL}} = f(\mathbf{X}_i) \in [362, 1093]
+$$
 
-evaluated via Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and the Coefficient of Determination (R^2):
+Model convergence and predictive accuracy are evaluated via Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and the Coefficient of Determination ($R^2$):
 
-```
-MAE = (1 / N) * sum_{i=1}^N |y_i - y_hat_i|
-RMSE = sqrt( (1 / N) * sum_{i=1}^N (y_i - y_hat_i)^2 )
-R^2 = 1 - ( sum_{i=1}^N (y_i - y_hat_i)^2 / sum_{i=1}^N (y_i - y_mean)^2 )
-```
+$$
+\text{MAE} = \frac{1}{N} \sum_{i=1}^N |y_i - \hat{y}_i|
+$$
+
+$$
+\text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^N (y_i - \hat{y}_i)^2}
+$$
+
+$$
+R^2 = 1 - \frac{\sum_{i=1}^N (y_i - \hat{y}_i)^2}{\sum_{i=1}^N (y_i - \bar{y})^2}
+$$
 
 ---
 
