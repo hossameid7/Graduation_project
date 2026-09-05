@@ -89,7 +89,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Keep session until logout
 # AI Model Settings
 AI_MODEL_SETTINGS = {
     'MAX_CACHE_SIZE': 1024 * 1024 * 1024,  # 1GB cache size
-    'MAX_LENGTH': 400,  # Maximum number of tokens for generation
+    'MAX_LENGTH': 200,  # Maximum number of tokens for generation
     'TEMPERATURE': 0.2,
     'TOP_P': 0.9,
     'CONTEXT_WINDOW': 5,  # Number of previous messages to include as context

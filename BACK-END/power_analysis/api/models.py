@@ -159,7 +159,7 @@ class TransformerMeasurement(models.Model):
     #     self.rul = data['rul']['predicted_rul']
     def compute_fdd_rul(self):
         import requests
-        response = requests.post("https://full-mugs-wave.loca.lt/predict", json={
+        response = requests.post("https://orange-colts-behave.loca.lt/predict", json={
             "H2": self.h2,
             "CO": self.co,
             "C2H4": self.c2h4,
