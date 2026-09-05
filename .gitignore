@@ -87,3 +87,6 @@ FRONT-END/project-bolt-bolt-vite-react-qdt1pyz9.zip
 BACK-END/power_analysis/api/migrations/__init__.py
 env/
 MOCK_DATA.csv
+WEB.txt
+.bolt/
+FRONT-END/project/.bolt/
